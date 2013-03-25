@@ -30,6 +30,10 @@
 		32AB39C416FB9F0E00660807 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 32AB39C216FB9F0E00660807 /* Credits.rtf */; };
 		32AB39C716FB9F0E00660807 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 32AB39C616FB9F0E00660807 /* AppDelegate.m */; };
 		32AB39CA16FB9F0F00660807 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 32AB39C816FB9F0F00660807 /* MainMenu.xib */; };
+		32C962D717006123001715C5 /* PinnedAndClientAuthHTTPSConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 32C962D617006123001715C5 /* PinnedAndClientAuthHTTPSConnection.m */; };
+		32C962DA170066A6001715C5 /* PlainURLConnectionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 32C962D9170066A6001715C5 /* PlainURLConnectionDelegate.m */; };
+		32C962DC17007500001715C5 /* client.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 32C962DB17006BAC001715C5 /* client.p12 */; };
+		32C962E01700851E001715C5 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 32C962DF1700851E001715C5 /* libcrypto.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +68,12 @@
 		32AB39D116FB9F0F00660807 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		32AB39F516FB9FF700660807 /* create-ca-and-server-certs.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "create-ca-and-server-certs.sh"; sourceTree = "<group>"; };
 		32C22FE016FC53230012819C /* proxy.conf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; name = proxy.conf; path = "../../Intermediates/Security Pinning by CA.build/Debug/Create Certs.build/DerivedSources/proxy.conf"; sourceTree = BUILT_PRODUCTS_DIR; };
+		32C962D517006123001715C5 /* PinnedAndClientAuthHTTPSConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinnedAndClientAuthHTTPSConnection.h; sourceTree = "<group>"; };
+		32C962D617006123001715C5 /* PinnedAndClientAuthHTTPSConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinnedAndClientAuthHTTPSConnection.m; sourceTree = "<group>"; };
+		32C962D8170066A6001715C5 /* PlainURLConnectionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlainURLConnectionDelegate.h; sourceTree = "<group>"; };
+		32C962D9170066A6001715C5 /* PlainURLConnectionDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlainURLConnectionDelegate.m; sourceTree = "<group>"; };
+		32C962DB17006BAC001715C5 /* client.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; name = client.p12; path = "../../Intermediates/Security Pinning by CA.build/Debug/Create Certs.build/DerivedSources/client.p12"; sourceTree = BUILT_PRODUCTS_DIR; };
+		32C962DF1700851E001715C5 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		32D55C4016FE5EC8004173F0 /* LICENSE.TXT */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.TXT; sourceTree = "<group>"; };
 		32D55C4316FE6381004173F0 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -73,6 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32C962E01700851E001715C5 /* libcrypto.dylib in Frameworks */,
 				3253B4C816FBB730008C671D /* Security.framework in Frameworks */,
 				32AB39B416FB9F0E00660807 /* Cocoa.framework in Frameworks */,
 			);
@@ -104,6 +115,7 @@
 		32AB39B216FB9F0E00660807 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				32C962DF1700851E001715C5 /* libcrypto.dylib */,
 				3253B4C716FBB730008C671D /* Security.framework */,
 				32AB39B316FB9F0E00660807 /* Cocoa.framework */,
 				32AB39D116FB9F0F00660807 /* SenTestingKit.framework */,
@@ -125,8 +137,12 @@
 		32AB39B916FB9F0E00660807 /* Security Pinning by CA */ = {
 			isa = PBXGroup;
 			children = (
+				32C962D8170066A6001715C5 /* PlainURLConnectionDelegate.h */,
+				32C962D9170066A6001715C5 /* PlainURLConnectionDelegate.m */,
 				3253B4C316FBA9D9008C671D /* PinnedHTTPSConnection.h */,
 				3253B4C416FBA9D9008C671D /* PinnedHTTPSConnection.m */,
+				32C962D517006123001715C5 /* PinnedAndClientAuthHTTPSConnection.h */,
+				32C962D617006123001715C5 /* PinnedAndClientAuthHTTPSConnection.m */,
 				32AB39C516FB9F0E00660807 /* AppDelegate.h */,
 				32AB39C616FB9F0E00660807 /* AppDelegate.m */,
 				32AB39C816FB9F0F00660807 /* MainMenu.xib */,
@@ -138,6 +154,7 @@
 		32AB39BA16FB9F0E00660807 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				32C962DB17006BAC001715C5 /* client.p12 */,
 				3253B4C016FBA93B008C671D /* ca.der */,
 				32AB39BB16FB9F0E00660807 /* Security Pinning by CA-Info.plist */,
 				32AB39BC16FB9F0E00660807 /* InfoPlist.strings */,
@@ -215,6 +232,7 @@
 				32AB39C416FB9F0E00660807 /* Credits.rtf in Resources */,
 				32AB39CA16FB9F0F00660807 /* MainMenu.xib in Resources */,
 				3253B4C116FBA93B008C671D /* ca.der in Resources */,
+				32C962DC17007500001715C5 /* client.p12 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,6 +250,7 @@
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/ca.der",
 				"$(DERIVED_FILE_DIR)/proxy.conf",
+				"$(DERIVED_FILE_DIR)/client.p12",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -247,6 +266,8 @@
 				32AB39C016FB9F0E00660807 /* main.m in Sources */,
 				32AB39C716FB9F0E00660807 /* AppDelegate.m in Sources */,
 				3253B4C516FBA9D9008C671D /* PinnedHTTPSConnection.m in Sources */,
+				32C962D717006123001715C5 /* PinnedAndClientAuthHTTPSConnection.m in Sources */,
+				32C962DA170066A6001715C5 /* PlainURLConnectionDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

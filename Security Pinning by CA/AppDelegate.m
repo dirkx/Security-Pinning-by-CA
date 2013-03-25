@@ -20,6 +20,7 @@
 
 #import "AppDelegate.h"
 #import "PinnedHTTPSConnection.h"
+#import "PinnedAndClientAuthHTTPSConnection.h"
 
 @implementation AppDelegate
 
@@ -30,29 +31,42 @@
 };
 
 -(IBAction)runTests:(id)sender {
-    _info.stringValue = @"running";
 
     NSString * derCaPath = [[NSBundle mainBundle] pathForResource:@"ca" ofType:@"der"];
+    NSString * identityPath = [[NSBundle mainBundle] pathForResource:@"client" ofType:@"p12"];
+    NSString * password = @"123456";
     
-    for(int i =0; i < 3; i++) {
-        NSURL * url1 = [NSURL URLWithString:@"https://localhost:8443"];
-        NSData  * results1 = [PinnedHTTPSConnection dataWithURL:url1
-                                                     withRootCA:derCaPath
-                                            strictHostNameCheck:YES];
-        _info.stringValue = [NSString stringWithFormat:@"Foreground test %00d - %ld bytes",
-                             i+1, [results1 length]];
-    };
+    if (NO) {
+        NSURL * url = [NSURL URLWithString:@"https://localhost:8443"];
+        PinnedHTTPSConnection  * conn = [[PinnedHTTPSConnection alloc] initWithURL:url
+                                                                        withRootCA:derCaPath
+                                                               strictHostNameCheck:NO];
+        assert(conn);
+        NSData  * results = [conn fetchSync];
+        assert([results length]);
+    }
+    
+    if (NO) {
+        NSURL * url = [NSURL URLWithString:@"https://127.0.0.1:8443"];
+        PinnedHTTPSConnection  * conn = [[PinnedHTTPSConnection alloc] initWithURL:url
+                                                                        withRootCA:derCaPath
+                                                               strictHostNameCheck:NO];
+        assert(conn);
+        NSData  * results = [conn fetchSync];
+        assert([results length]);
+        
+    }
 
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        NSURL * url2 = [NSURL URLWithString:@"https://127.0.0.1:8443"];
-        for(int i =0; i < 3; i++) {
-            NSData  * results2 = [PinnedHTTPSConnection dataWithURL:url2
-                                                         withRootCA:derCaPath
-                                                strictHostNameCheck:NO];
-            _info.stringValue = [NSString stringWithFormat:@"Background test %00d - %ld bytes",
-                                 i+1, [results2 length]];
-        }
-        _info.stringValue = @"Done";
-    });
-}
+    if (YES) {
+        NSURL * url = [NSURL URLWithString:@"https://localhost:8444"];
+        PinnedAndClientAuthHTTPSConnection * conn =  [[PinnedAndClientAuthHTTPSConnection alloc] initWithURL:url
+                                                                                            withPKCS12Client:identityPath
+                                                                                                withPassword:password
+                                                                                                  withRootCA:derCaPath
+                                                                                         strictHostNameCheck:YES];
+        assert(conn);
+        NSData  * results = [conn fetchSync];
+        assert([results length]);
+    }
+ }
 @end

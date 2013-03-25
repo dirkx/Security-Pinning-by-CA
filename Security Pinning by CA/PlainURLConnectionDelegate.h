@@ -1,5 +1,5 @@
 //
-//  PinnedHTTPSConnection.h
+//  PlainURLConnectionDelegate.h
 //  Security Pinning by CA
 //
 // Copyright (c) 2013 Dirk-Willem van Gulik <dirkx@webweaving.org>,
@@ -18,11 +18,8 @@
 // limitations under the License.
 //
 
-#import <Foundation/Foundation.h>
-#import "PlainURLConnectionDelegate.h"
+@interface PlainURLConnectionDelegate : NSObject  <NSURLConnectionDelegate>
 
-@interface PinnedHTTPSConnection : PlainURLConnectionDelegate
-
--(id)initWithURL:(NSURL *)anUrl withRootCA:(NSString *)caDerFilePath strictHostNameCheck:(BOOL)check;
--(id)initWithURL:(NSURL *)anUrl withRootCAs:(NSArray *)anArrayOfSecCertificateRef strictHostNameCheck:(BOOL)check;
+-(id)initWithURL:(NSURL *)anUrl;
+-(NSData *)fetchSync;
 @end

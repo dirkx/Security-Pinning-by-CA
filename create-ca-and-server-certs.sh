@@ -40,7 +40,7 @@ openssl x509 -extfile "${CNF}" \
 
 # Step 2. create a sub sub CA - and sign with the sun ca certificate
 openssl req -config "${CNF}" \
-    -new   -keyout subsub.key -out subsub.csr -subj "/CN=Sub Sub CA" -nodes -extensions v3_ca
+    -new   -keyout subsub.key -out subsub.csr -subj "/CN=Services Sub Sub CA" -nodes -extensions v3_ca
 openssl x509 -extfile "${CNF}" \
     -req  -in subsub.csr -CA sub.pem -CAkey sub.key -set_serial 3 -days $DAYS -out subsub.pem  -extensions v3_ca
 
@@ -51,6 +51,21 @@ openssl req -config "${CNF}" \
     -new -keyout server.key -out server.csr -subj "/CN=${HOSTNAME}" -nodes
 openssl x509 -extfile "${CNF}" \
     -req -in server.csr -CA subsub.pem -CAkey subsub.key -set_serial 3 -days $DAYS -out server.pem  -extensions usr_cert
+
+# Step 4. create a client cert to identify ourselves with; and turn this into a sensible PKCS12
+openssl req -config "${CNF}" \
+    -new   -keyout clientsubsub.key -out clientsubsub.csr -subj "/CN=Client issuing Sub Sub CA" -nodes -extensions v3_ca
+openssl x509 -extfile "${CNF}" \
+    -req  -in clientsubsub.csr -CA sub.pem -CAkey sub.key -set_serial 3 -days $DAYS -out clientsubsub.pem  -extensions v3_ca
+
+openssl req -config "${CNF}" \
+    -new -keyout client.key -out client.csr -subj "/CN=Moi The User" -nodes
+openssl x509 -extfile "${CNF}" \
+    -req -in  client.csr -CA clientsubsub.pem -CAkey clientsubsub.key -set_serial 3 -days $DAYS -out client.pem  -extensions usr_cert
+
+cat ca.pem sub.pem clientsubsub.pem > clientchain.pem
+openssl pkcs12 -export -name "client identifier" \
+    -chain -CAfile clientchain.pem -password pass:123456 -in client.pem -inkey client.key -out client.p12
 
 # Finally - we also create one for Evil Eve.
 #
@@ -74,7 +89,7 @@ openssl x509 -extfile "${CNF}" \
 # also add the evil CA to this list. As that should not
 # matter if things work as advertized.
 #
-cat subsub.pem sub.pem \
+cat ca.pem subsub.pem sub.pem clientsubsub.pem \
     evil-server.pem evil-sub.pem evil-ca.pem \
     > chain.pem
 
@@ -90,8 +105,7 @@ cat <<EOM > proxy.conf
 #
 # Activate in apache with the command:
 #
-#   sudo ln -s "${DERIVED_FILES_DIR}"/proxy.conf \\
-#                   /etc/apache2/users/proxy.conf"
+#   sudo ln -s "${DERIVED_FILES_DIR}"/proxy.conf /etc/apache2/users/proxy.conf
 #
 # And then restart apache:
 #
@@ -99,15 +113,28 @@ cat <<EOM > proxy.conf
 #
 # Or by moving this file into /etc/apache2/users.
 #
-
-SetEnv CERTDIR "${DERIVED_FILES_DIR}"
+#
 
 Listen *:8443
 <VirtualHost *:8443>
     SSLEngine On
-    SSLCertificateFile "\${CERTDIR}/server.pem"
-    SSLCertificateKeyFile "\${CERTDIR}/server.key"
-    SSLCACertificateFile "\${CERTDIR}/chain.pem"
+    SSLCertificateFile "${DERIVED_FILES_DIR}/server.pem"
+    SSLCertificateKeyFile "${DERIVED_FILES_DIR}/server.key"
+    SSLCACertificateFile "${DERIVED_FILES_DIR}/chain.pem"
+
+    ProxyPass / http://xkcd.com/
+    ProxyPassReverse / http://xkcd.com/
+</VirtualHost>
+
+Listen *:8444
+<VirtualHost *:8444>
+    SSLEngine On
+    SSLCertificateFile "${DERIVED_FILES_DIR}/server.pem"
+    SSLCertificateKeyFile "${DERIVED_FILES_DIR}/server.key"
+    SSLCACertificateFile "${DERIVED_FILES_DIR}/chain.pem"
+    SSLVerifyClient require
+    # very slack here - accept anything remotely signed by a ca we know.
+    SSLVerifyDepth 5
 
     ProxyPass / http://xkcd.com/
     ProxyPassReverse / http://xkcd.com/
